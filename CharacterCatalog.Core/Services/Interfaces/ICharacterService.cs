@@ -1,9 +1,10 @@
 ﻿using CharacterCatalog.Core.Constants;
 using CharacterCatalog.Core.Models;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
-namespace CharacterCatalog.Web.Services.Interfaces
+namespace CharacterCatalog.Core.Services.Interfaces
 {
     public interface ICharacterService
     {
@@ -13,5 +14,6 @@ namespace CharacterCatalog.Web.Services.Interfaces
         Task CreateAsync(Character character);
         Task<bool> UpdateAsync(Character character);
         Task RemoveByIdAsync(int id);
+        Task<(Dictionary<string, object>, Dictionary<string, DataTable>)> GetQueriesAsync();
     }
 }

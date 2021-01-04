@@ -1,0 +1,186 @@
+﻿@using CharacterCatalog.Core.Helpers;
+@using CharacterCatalog.Core.Collections;
+@using CharacterCatalog.Core.Models; 
+@using System.IO;
+@using Newtonsoft.Json;
+
+<h1>Knot</h1>
+
+<div>
+    <h2>Character knot</h2>
+
+    <br />
+
+@if (characterKnot == null)
+{
+    <p>
+        Loading data...
+    </p>
+}
+else
+{
+    var current = characterKnot.Start;
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Species</th>
+                <th>Type</th>
+                <th>Gender</th>
+                <th>PictureUrl</th>
+            </tr>
+        </thead>
+        <tbody>
+    @while (current != null)
+    {
+        var currentCharacter = current.Data;
+            <tr>
+                <th>@currentCharacter.Name</th>
+                <th>@currentCharacter.Status</th>
+                <th>@currentCharacter.Species</th>
+                <th>@currentCharacter.Type</th>
+                <th>@currentCharacter.Gender</th>
+                <th><img src="@currentCharacter.PictureUrl" /></th>
+                <th><button @onclick="() => removeCharacter(currentCharacter)">Remove</button></th>
+            </tr>
+        current = current.Next;
+    }
+        </tbody>
+    </table>
+}
+</div>
+
+<br />
+
+<div>
+    <p>Get the item with the longest .ToString() value from the character knot.</p>
+
+    <br />
+@{
+    var longestToStringCharacter = characterKnot.LongestToString();
+}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Species</th>
+                <th>Type</th>
+                <th>Gender</th>
+                <th>PictureUrl</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@longestToStringCharacter.Name</td>
+                <td>@longestToStringCharacter.Status</td>
+                <td>@longestToStringCharacter.Species</td>
+                <td>@longestToStringCharacter.Type</td>
+                <td>@longestToStringCharacter.Gender</td>
+                <td><img src="@longestToStringCharacter.PictureUrl" /></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<br />
+
+<div>
+    <h2>Knot with string values</h2>
+
+    <br />
+
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Initial values</th>
+                    </tr>
+                </thead>
+                <tbody>
+@{ 
+    var currentInitial = stringKnotInitial.Start;
+
+    while (currentInitial != null)
+    {
+                    <tr>
+                        <td>@currentInitial.Data</td>
+                    </tr>
+
+        currentInitial = currentInitial.Next;
+    }
+}
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Unique values</th>
+                    </tr>
+                </thead>
+                <tbody>
+@{ 
+    var currentUnique = stringKnotUnique.Start;
+
+    while (currentUnique != null)
+    {
+                    <tr>
+                        <td>@currentUnique.Data</td>
+                    </tr>
+
+        currentUnique = currentUnique.Next;
+    }
+}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@code {
+    Knot<Character> characterKnot;
+
+    Knot<string> stringKnotInitial => testNames.ToKnot();
+    Knot<string> stringKnotUnique => stringKnotInitial.GetUnique();
+
+    string[] testNames = new[]
+    {
+        "Niklaus Wirth",
+        "Bill Gates",
+        "Steve Jobs",
+        "James Gosling",
+        "Guido van Rossmun",
+        "Ken Thompson",
+        "Ken Thompson",
+        "Ken Thompson",
+        "Donald Knuth",
+        "Tim Berners-Lee",
+        "Tim Berners-Lee",
+        "Bjarne Stroustrup",
+        "Linus Torvalds",
+        "Dennis Ritchie",
+        "Dennis Ritchie"
+    };
+
+    protected async override Task OnInitializedAsync()
+    {
+        await loadData();
+    }
+
+    private async Task loadData()
+    {
+        var jsonData = await File.ReadAllTextAsync($@"{Directory.GetCurrentDirectory()}\wwwroot\characters_reduced.json");
+        var parsedData = JsonConvert.DeserializeObject<List<Character>>(jsonData);
+
+        characterKnot = parsedData.ToKnot();
+    }
+
+    private void removeCharacter(Character c)
+    {
+        characterKnot.Remove(c);
+    }
+}

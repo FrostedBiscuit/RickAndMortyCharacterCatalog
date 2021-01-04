@@ -1,0 +1,11 @@
+﻿@using CharacterCatalog.Web.Components;
+
+@{
+    ViewData["Title"] = "Home - Knot";
+    Layout = "~/Views/Shared/_KnotLayout.cshtml";
+}
+
+<component type="typeof(KnotComponent)" render-mode="ServerPrerendered" />
+
+<base href="~/" />
+<script src="_framework/blazor.server.js"></script>

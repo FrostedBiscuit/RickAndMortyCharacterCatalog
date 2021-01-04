@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using CharacterCatalog.Web.Models;
-using CharacterCatalog.Web.Services;
 using CharacterCatalog.Web.Services.Interfaces;
+using CharacterCatalog.Web.Services;
+using CharacterCatalog.Core.Services.Interfaces;
+using CharacterCatalog.Core.Services;
+using CharacterCatalog.Core.Models;
 
 namespace CharacterCatalog
 {
@@ -29,7 +31,10 @@ namespace CharacterCatalog
             services.AddDbContext<CharacterDbContext>();
 
             services.AddScoped<ICharacterService, CharacterService>();
+            services.AddScoped<ISpeciesService, SpeciesService>();
+            services.AddScoped<IUploadService, UploadService>();
 
+            services.AddServerSideBlazor();
             services.AddControllersWithViews();
         }
 
@@ -55,6 +60,8 @@ namespace CharacterCatalog
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapBlazorHub();
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

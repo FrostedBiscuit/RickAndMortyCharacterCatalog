@@ -1,30 +1,20 @@
 ﻿using System.Diagnostics;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using CharacterCatalog.Models;
-using CharacterCatalog.Web.Services.Interfaces;
+using CharacterCatalog.Web.Models;
 
-namespace CharacterCatalog.Controllers
+namespace CharacterCatalog.Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
-        private readonly ICharacterService _characterService;
-
-        public HomeController(ILogger<HomeController> logger, ICharacterService characterService)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _characterService = characterService;
         }
 
-        public async Task<IActionResult> Index([FromQuery] int page = 0, [FromQuery] int pageSize = 20)
-        {
-            return View(await _characterService.GetAsync(page, pageSize));
-        }
-
-        public IActionResult Privacy()
+        public IActionResult Index()
         {
             return View();
         }

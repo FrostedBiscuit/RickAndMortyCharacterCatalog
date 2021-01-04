@@ -1,6 +1,6 @@
 using System;
 
-namespace CharacterCatalog.Models
+namespace CharacterCatalog.Web.Models
 {
     public class ErrorViewModel
     {

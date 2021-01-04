@@ -1,0 +1,11 @@
+﻿@using CharacterCatalog.Web.Components;
+
+@{
+    ViewData["Title"] = "Home - Generic List";
+    Layout = "~/Views/Shared/_GenericListLayout.cshtml";
+}
+
+<component type="typeof(GenericListComponent)" render-mode="ServerPrerendered" />
+
+<base href="~/" />
+<script src="_framework/blazor.server.js"></script>

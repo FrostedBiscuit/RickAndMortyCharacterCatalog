@@ -1,0 +1,497 @@
+﻿@using System.IO;
+@using Newtonsoft.Json; 
+@using CharacterCatalog.Core.Models; 
+@using CharacterCatalog.Core.Collections; 
+@using CharacterCatalog.Core.Helpers;
+
+<h2>Generic List</h2>
+
+<br />
+<br />
+
+<div>
+    <h3>Collection</h3>
+    <br />
+    <br />
+    @if (characters == null)
+    {
+        <a>No no data loaded.</a>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Species</th>
+                    <th>Type</th>
+                    <th>Gender</th>
+                    <th>PictureUrl</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var character in characters)
+        {
+                <tr>
+                    <th>@character.Name</th>
+                    <th>@character.Status</th>
+                    <th>@character.Species</th>
+                    <th>@character.Type</th>
+                    <th>@character.Gender</th>
+                    <th><img src="@character.PictureUrl" /></th>
+                    <th><button @onclick="() => removeCharacter(character)">Remove</button></th>
+                </tr>
+        }
+            </tbody>
+        </table>
+    }
+</div>
+<div>
+    <h1>Character with the longest .ToString().</h1>
+    <br />
+    <br />
+
+@{
+    var longestToStringCharacter = characters.LongestToString();
+}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Species</th>
+                <th>Type</th>
+                <th>Gender</th>
+                <th>Picture</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>@longestToStringCharacter.Name</th>
+                <th>@longestToStringCharacter.Status</th>
+                <th>@longestToStringCharacter.Species</th>
+                <th>@longestToStringCharacter.Type</th>
+                <th>@longestToStringCharacter.Gender</th>
+                <th><img src="@longestToStringCharacter.PictureUrl" /></th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<br />
+<div>
+    <h3>Classical query</h3>
+
+    <br />
+
+    <a>Query for characters, which are human.</a>
+
+    <br />
+    <br />
+
+    @if (classicalQuery == null)
+    {
+        <button @onclick="doClassicalQuery">Execute</button>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Species</th>
+                    <th>Type</th>
+                    <th>Gender</th>
+                    <th>PictureUrl</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var character in classicalQuery)
+        {
+                <tr>
+                    <th>@character.Name</th>
+                    <th>@character.Status</th>
+                    <th>@character.Species</th>
+                    <th>@character.Type</th>
+                    <th>@character.Gender</th>
+                    <th><img src="@character.PictureUrl" /></th>
+                </tr>
+        }
+            </tbody>
+        </table>
+    }
+</div>
+<br />
+<div>
+    <h2>Linq queries</h2>
+
+    <br />
+    <br />
+
+    <div>
+        <p>
+            Selects only characters which are alive.
+        </p>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Species</th>
+                    <th>Type</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var character in aliveCharacters)
+        {
+                <tr>
+                    <th>@character.Name</th>
+                    <th>@character.Status</th>
+                    <th>@character.Species</th>
+                    <th>@character.Type</th>
+                    <th>@character.Gender</th>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <p>
+            Select only characters who have a type.
+        </p>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Species</th>
+                    <th>Type</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var character in charactersWithType)
+        {
+                <tr>
+                    <th>@character.Name</th>
+                    <th>@character.Status</th>
+                    <th>@character.Species</th>
+                    <th>@character.Type</th>
+                    <th>@character.Gender</th>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <p>
+            Select only characters who are human and female.
+        </p>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Species</th>
+                    <th>Type</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var character in femaleHumanCharacters)
+        {
+                <tr>
+                    <th>@character.Name</th>
+                    <th>@character.Status</th>
+                    <th>@character.Species</th>
+                    <th>@character.Type</th>
+                    <th>@character.Gender</th>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <p>
+            Select distinct character statuses and counts them.
+        </p>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var item in statusFequency)
+        {
+                <tr>
+                    <th>@item.Item1</th>
+                    <th>@item.Item2</th>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <p>
+            Select the most common species and how many times it appears in the list.
+        </p>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Species</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>@mostCommonSpecies.Item1</th>
+                    <th>@mostCommonSpecies.Item2</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<br />
+<div>
+    <h2>Fluent API queries</h2>
+
+    <br />
+    <br />
+
+    <div>
+        <p>
+            Selects only characters which are alive.
+        </p>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Species</th>
+                    <th>Type</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var character in fluentAliveCharacters)
+        {
+                <tr>
+                    <th>@character.Name</th>
+                    <th>@character.Status</th>
+                    <th>@character.Species</th>
+                    <th>@character.Type</th>
+                    <th>@character.Gender</th>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <p>
+            Select only characters who have a type.
+        </p>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Species</th>
+                    <th>Type</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var character in fluentCharactersWithType)
+        {
+                <tr>
+                    <th>@character.Name</th>
+                    <th>@character.Status</th>
+                    <th>@character.Species</th>
+                    <th>@character.Type</th>
+                    <th>@character.Gender</th>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <p>
+            Select only characters who are human and female.
+        </p>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Species</th>
+                    <th>Type</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var character in fluentFemaleCharacters)
+        {
+                <tr>
+                    <th>@character.Name</th>
+                    <th>@character.Status</th>
+                    <th>@character.Species</th>
+                    <th>@character.Type</th>
+                    <th>@character.Gender</th>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <p>
+            Select distinct character statuses and counts them.
+        </p>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var item in fluentStatusFequency)
+        {
+                <tr>
+                    <th>@item.Item1</th>
+                    <th>@item.Item2</th>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <p>
+            Select the most common species and how many times it appears in the list.
+        </p>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Species</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>@fluentMostCommonSpecies.Item1</th>
+                    <th>@fluentMostCommonSpecies.Item2</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<br />
+<div>
+    <h2>Serialize data</h2>
+
+    <br />
+
+    <button @onclick="serializeCollection">Serialize collection</button>
+
+    <br />
+
+    @if (!string.IsNullOrEmpty(serializedCollection))
+    {
+    <code>
+        <pre>
+            @serializedCollection
+        </pre>
+    </code>
+    }
+</div>
+@code {
+    GenericCollection<Character> characters;
+    GenericCollection<Character> classicalQuery;
+
+    #region LINq queries
+    GenericCollection<Character> aliveCharacters => (from c in characters where c.Status == Status.Alive select c).ToGenericCollection();
+    GenericCollection<Character> charactersWithType => (from c in characters where !string.IsNullOrEmpty(c.Type) select c).ToGenericCollection();
+    GenericCollection<Character> femaleHumanCharacters => (from c in characters where c.Gender == Gender.Female where c.Species.SpeciesId == 1 select c).ToGenericCollection();
+    GenericCollection<(Status, int)> statusFequency => (from c in characters group c by c.Status into stsGrp orderby stsGrp.Count() descending select (stsGrp.Key, stsGrp.Count())).ToGenericCollection();
+    (Species, int) mostCommonSpecies => (from c in characters group c by c.Species into spcsGrp orderby spcsGrp.Count() descending select (spcsGrp.Key, spcsGrp.Count())).FirstOrDefault();
+    #endregion
+
+    #region Fluent API queries
+    GenericCollection<Character> fluentAliveCharacters => characters.Where(c => c.Status == Status.Alive).ToGenericCollection();
+    GenericCollection<Character> fluentCharactersWithType => characters.Where(c => !string.IsNullOrEmpty(c.Type)).ToGenericCollection();
+    GenericCollection<Character> fluentFemaleCharacters => characters.Where(c => c.Gender == Gender.Female).Where(c => c.Species.SpeciesId == 1).ToGenericCollection();
+    GenericCollection<(Status, int)> fluentStatusFequency => characters.GroupBy(c => c.Status).Select(stsGrp => (stsGrp.Key, stsGrp.Count())).OrderBy(x => x.Item2).ToGenericCollection();
+    (Species, int) fluentMostCommonSpecies => characters.GroupBy(c => c.Species).Select(stsGrp => (stsGrp.Key, stsGrp.Count())).OrderByDescending(x => x.Item2).FirstOrDefault();
+    #endregion
+
+
+    int characterCount
+    {
+        get
+        {
+            return characters == null ? 0 : characters.Count;
+        }
+    }
+
+    string serializedCollection;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await loadData();
+    }
+
+    private async Task loadData()
+    {
+        var jsonData = await File.ReadAllTextAsync($@"{Directory.GetCurrentDirectory()}\wwwroot\characters_reduced.json");
+
+        characters = JsonConvert.DeserializeObject<GenericCollection<Character>>(jsonData);
+    }
+
+    private void removeCharacter(Character character)
+    {
+        characters.Remove(character);
+    }
+
+    private void doClassicalQuery()
+    {
+        classicalQuery = characters.ClassicalQuery();
+    }
+
+    private void serializeCollection()
+    {
+        serializedCollection = JsonConvert.SerializeObject(characters, Formatting.Indented);
+    }
+}

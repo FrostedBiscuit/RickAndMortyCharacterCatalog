@@ -1,0 +1,93 @@
+﻿@*
+	For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model (Dictionary<string, object>, Dictionary<string, DataTable>)
+
+@using System.Data;
+
+@{
+	ViewData["Title"] = "Queries - Database";
+	Layout = "~/Views/Shared/_CharacterLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/character_queries.css" />
+	
+<h1>Queries</h1>
+
+<div>
+	<br />
+	<h3>Scalar queries</h3>
+	<table class="table">
+		<thead>
+			<tr>
+				<td>
+					<h5>Queries</h5>
+				</td>
+					<td>
+					<h5>Results</h5>
+				</td>	
+			</tr>
+		</thead>
+		<tbody>
+        @foreach (var query in Model.Item1)
+        {
+			<tr>
+                <td>
+                    <code>@query.Key</code>
+                </td>
+                <td>
+                     @query.Value
+                </td>
+            </tr>
+		}
+		</tbody>
+	</table>
+	<br />
+	<h3>Reader queries</h3>
+	<table class="table">
+		<thead>
+			<tr>
+				<td>
+					<h5>Queries</h5>
+				</td>
+				<td>
+					<h5>Results</h5>
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+		@foreach (var query in Model.Item2)
+        {
+			<tr>
+				<td>
+                    <code>@query.Key</code>
+				</td>
+				<td>
+                    <table class="result-table">
+						<thead>
+							<tr>
+                            @foreach (DataColumn column in query.Value.Columns)
+                            {
+								<td>@column.ColumnName</td>
+                            }
+							</tr>
+						</thead>
+						<tbody>
+						@foreach (DataRow row in query.Value.Rows)
+						{
+							<tr>
+							@foreach (DataColumn column in query.Value.Columns)
+							{
+								<td>@row[column]</td>
+							}
+							</tr>
+						}
+						</tbody> 
+                    </table>
+				</td>
+			</tr>
+        }
+		</tbody>
+	</table>
+</div>

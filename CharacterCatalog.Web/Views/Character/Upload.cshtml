@@ -1,0 +1,20 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Upload";
+    Layout = "~/Views/Shared/_CharacterLayout.cshtml";
+}
+
+<h1>Upload characters from JSON file</h1>
+<hr />
+<div class="col-sm">
+    <form asp-controller="Upload" asp-action="UploadFile" method="post" enctype="multipart/form-data">
+        <input id="fileInput" type="file" name="file" />
+        <button id="submitButton" type="submit">Upload file</button>
+        @if (ViewBag.Message != null)
+        {
+            <label>@ViewBag.Message</label>
+        }
+    </form>
+</div>
