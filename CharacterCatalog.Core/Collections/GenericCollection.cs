@@ -46,7 +46,7 @@ namespace CharacterCatalog.Core.Collections
             velikost = velikost + 1; //število zasedenih celic
         }
         //generična metoda za brisanje celice z določenim indeksom
-        public bool Brisanje(int indeksCelice)
+        public bool RemoveAt(int index)
         {
             if (velikost == 0)
             {
@@ -56,13 +56,13 @@ namespace CharacterCatalog.Core.Collections
             }
             //celico brišemo le, če je njen indeks manjši od dimenzije zbirke  
             // if (indeksCelice < elementi.Length && indeksCelice >= 0)
-            else if (indeksCelice < elementi.Length)
+            else if (index < elementi.Length)
             {
                 T[] zacasna = new T[elementi.Length - 1];
                 int j = 0;
                 for (int i = 0; i < elementi.Length; i++)
                 {
-                    if (i != indeksCelice)
+                    if (i != index)
                     {
                         zacasna[j] = elementi[i];
                         j++;
@@ -71,7 +71,7 @@ namespace CharacterCatalog.Core.Collections
                 elementi = zacasna;
                 velikost = velikost - 1;//zmanjšamo velikost zbirke
             }
-            else Console.WriteLine("Brisanje NI možno, ker indeks št "+indeksCelice+" NE obstaja!");
+            else Console.WriteLine("Brisanje NI možno, ker indeks št "+index+" NE obstaja!");
             return true;
         }
 
@@ -91,6 +91,7 @@ namespace CharacterCatalog.Core.Collections
 
         public void Clear()
         {
+            velikost = 0;
             elementi = new T[0];
         }
 

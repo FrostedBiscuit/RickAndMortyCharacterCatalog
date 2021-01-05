@@ -1,8 +1,12 @@
 ﻿@using System.IO;
+@using System.Net.Http;
 @using Newtonsoft.Json; 
+@using Newtonsoft.Json.Linq;
 @using CharacterCatalog.Core.Models; 
 @using CharacterCatalog.Core.Collections; 
 @using CharacterCatalog.Core.Helpers;
+
+@inject HttpClient HttpClient;
 
 <h2>Generic List</h2>
 
@@ -77,6 +81,57 @@
             </tr>
         </tbody>
     </table>
+</div>
+<br />
+<div>
+    <h1>Convert generic list to set</h1>
+
+    <br />
+
+    <button @onclick="generateListOfWords">Load words</button>
+
+    <br />
+    <br />
+
+    @if (initialWordList != null && uniqueWordList != null)
+    {
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Initial word list</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var word in initialWordList)
+                    {
+                    <tr>
+                        <td>@word</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Unique word list</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var word in uniqueWordList)
+                    {
+                    <tr>
+                        <td>@word</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    }
 </div>
 <br />
 <div>
@@ -441,7 +496,7 @@
     GenericCollection<Character> characters;
     GenericCollection<Character> classicalQuery;
 
-    #region LINq queries
+    #region Linq queries
     GenericCollection<Character> aliveCharacters => (from c in characters where c.Status == Status.Alive select c).ToGenericCollection();
     GenericCollection<Character> charactersWithType => (from c in characters where !string.IsNullOrEmpty(c.Type) select c).ToGenericCollection();
     GenericCollection<Character> femaleHumanCharacters => (from c in characters where c.Gender == Gender.Female where c.Species.SpeciesId == 1 select c).ToGenericCollection();
@@ -493,5 +548,16 @@
     private void serializeCollection()
     {
         serializedCollection = JsonConvert.SerializeObject(characters, Formatting.Indented);
+    }
+
+    private GenericCollection<string> initialWordList;
+    private GenericCollection<string> uniqueWordList;
+
+    private async Task generateListOfWords()
+    {
+        var response = await HttpClient.GetStringAsync($@"https://random-word-api.herokuapp.com/word?number=10&swear=0");
+
+        initialWordList = JsonConvert.DeserializeObject<GenericCollection<string>>(response);
+        uniqueWordList = initialWordList.ScrambleWordList().GetUniqueCollection();
     }
 }

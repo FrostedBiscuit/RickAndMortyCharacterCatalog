@@ -13,6 +13,7 @@ using CharacterCatalog.Web.Services;
 using CharacterCatalog.Core.Services.Interfaces;
 using CharacterCatalog.Core.Services;
 using CharacterCatalog.Core.Models;
+using System.Net.Http;
 
 namespace CharacterCatalog
 {
@@ -33,6 +34,9 @@ namespace CharacterCatalog
             services.AddScoped<ICharacterService, CharacterService>();
             services.AddScoped<ISpeciesService, SpeciesService>();
             services.AddScoped<IUploadService, UploadService>();
+
+
+            services.AddSingleton(typeof(HttpClient));
 
             services.AddServerSideBlazor();
             services.AddControllersWithViews();
