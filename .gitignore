@@ -362,3 +362,5 @@ MigrationBackup/
 # Custom
 
 *.db
+
+CharacterCatalog.Web/Migrations/*
